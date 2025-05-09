@@ -16,7 +16,7 @@ import shutil
 # Initialize colorama
 init(autoreset=True)
 
-__version__ = "2.0"
+__version__ = "2.1"
 
 class AESEncryptor:
     def __init__(self, password: str, iterations: int = 100000):
@@ -158,18 +158,18 @@ def loading_animation(message, duration=0.5):
     print()
 
 def show_main_menu():
-    """Display the main menu options"""
+    """Display the main menu options with numbers"""
     show_banner()
     width = get_terminal_size().columns
     
     print(Fore.MAGENTA + Style.BRIGHT + "[ MAIN MENU ]".center(width))
     print()
-    print(Fore.WHITE + "  [S] Start New Operation".center(width))
-    print(Fore.WHITE + "  [E] Exit Application".center(width))
+    print(Fore.WHITE + "  [1] Start New Operation".center(width))
+    print(Fore.WHITE + "  [2] Exit Application".center(width))
     print()
     
     menu_width = 50
-    prompt = "Select an option [S/E]:".center(width)
+    prompt = "Select an option [1-2]:".center(width)
     
     return prompt
 
@@ -252,36 +252,42 @@ def text_operation_menu(encryptor: AESEncryptor, operation: str):
     input(Fore.YELLOW + "\n[→] Press Enter to continue...")
 
 def show_operations_menu(encryptor: AESEncryptor):
-    """Display the operations menu after selecting 'Start New Scan'"""
+    """Display the operations menu with numbers"""
     while True:
         show_banner()
         width = get_terminal_size().columns
         
         print(Fore.MAGENTA + Style.BRIGHT + "[ OPERATION MENU ]".center(width))
         print()
-        print(Fore.WHITE + "  [E] Encrypt File".center(width))
-        print(Fore.WHITE + "  [D] Decrypt File".center(width))
-        print(Fore.WHITE + "  [T] Encrypt Text".center(width))
-        print(Fore.WHITE + "  [V] Decrypt Text".center(width))
-        print(Fore.WHITE + "  [B] Return to Main Menu".center(width))
+        print(Fore.WHITE + "  [1] Encrypt File".center(width))
+        print(Fore.WHITE + "  [2] Decrypt File".center(width))
+        print(Fore.WHITE + "  [3] Encrypt Text".center(width))
+        print(Fore.WHITE + "  [4] Decrypt Text".center(width))
+        print(Fore.WHITE + "  [5] Return to Main Menu".center(width))
         print()
         
         menu_width = 50
-        prompt = "Select an option [E/D/T/V/B]:".center(width)
-        choice = input(Fore.CYAN + prompt + Fore.WHITE + " ").upper()
+        prompt = "Select an option [1-5]:".center(width)
+        choice = input(Fore.CYAN + prompt + Fore.WHITE + " ")
         
-        if choice == 'E':
-            file_operation_menu(encryptor, "encrypt")
-        elif choice == 'D':
-            file_operation_menu(encryptor, "decrypt")
-        elif choice == 'T':
-            text_operation_menu(encryptor, "encrypt")
-        elif choice == 'V':
-            text_operation_menu(encryptor, "decrypt")
-        elif choice == 'B':
-            break
-        else:
-            print(Fore.RED + "[×] Invalid option selected!".center(width))
+        try:
+            choice = int(choice)
+            
+            if choice == 1:
+                file_operation_menu(encryptor, "encrypt")
+            elif choice == 2:
+                file_operation_menu(encryptor, "decrypt")
+            elif choice == 3:
+                text_operation_menu(encryptor, "encrypt")
+            elif choice == 4:
+                text_operation_menu(encryptor, "decrypt")
+            elif choice == 5:
+                break
+            else:
+                print(Fore.RED + "[×] Invalid option selected!".center(width))
+                input(Fore.YELLOW + "[→] Press Enter to continue...")
+        except ValueError:
+            print(Fore.RED + "[×] Please enter a valid number!".center(width))
             input(Fore.YELLOW + "[→] Press Enter to continue...")
 
 def main():
@@ -289,24 +295,30 @@ def main():
     
     while True:
         prompt = show_main_menu()
-        choice = input(prompt + " ").upper()
+        choice = input(prompt + " ")
         
-        if choice == 'S':
-            # Start New Operation
-            show_banner()
-            password = getpass(Fore.CYAN + "\n➤ Enter encryption/decryption password: " + Fore.WHITE)
-            encryptor = AESEncryptor(password)
-            show_operations_menu(encryptor)
-        elif choice == 'E':
-            # Exit Application
-            show_banner()
-            print(Fore.CYAN + "[*] Thank you for using AES Encryption/Decryption Tool!".center(get_terminal_size().columns))
-            print(Fore.YELLOW + "[*] Exiting...".center(get_terminal_size().columns))
-            time.sleep(1)
-            clear_screen()
-            break
-        else:
-            print(Fore.RED + "[×] Invalid option selected!".center(get_terminal_size().columns))
+        try:
+            choice = int(choice)
+            
+            if choice == 1:
+                # Start New Operation
+                show_banner()
+                password = getpass(Fore.CYAN + "\n➤ Enter encryption/decryption password: " + Fore.WHITE)
+                encryptor = AESEncryptor(password)
+                show_operations_menu(encryptor)
+            elif choice == 2:
+                # Exit Application
+                show_banner()
+                print(Fore.CYAN + "[*] Thank you for using AES Encryption/Decryption Tool!".center(get_terminal_size().columns))
+                print(Fore.YELLOW + "[*] Exiting...".center(get_terminal_size().columns))
+                time.sleep(1)
+                clear_screen()
+                break
+            else:
+                print(Fore.RED + "[×] Invalid option selected!".center(get_terminal_size().columns))
+                input(Fore.YELLOW + "[→] Press Enter to continue...")
+        except ValueError:
+            print(Fore.RED + "[×] Please enter a valid number!".center(get_terminal_size().columns))
             input(Fore.YELLOW + "[→] Press Enter to continue...")
 
 if __name__ == "__main__":
